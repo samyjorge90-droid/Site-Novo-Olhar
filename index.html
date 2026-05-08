@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Olhar - Um novo olhar para suas fotos e produtos</title>
+    <!-- Carregamento do Tailwind CSS para estilo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuração da Fonte (Poppins e Montserrat) e Cores -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Poppins:wght@300;400;600;700;800&display=swap');
+        
+        /* Paleta de Cores: Azul Petróleo (#003A63), Laranja/Dourado (#F4A261) */
+        :root {
+            --color-primary: #003A63;
+            --color-accent: #F4A261;
+            --color-text: #333333; /* Cor para textos gerais */
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f8f8;
+            color: var(--color-text);
+        }
+
+        /* Estilo para a seção Home (Fundo Azul Petróleo) */
+        .home-section {
+            background-color: var(--color-primary);
+            color: white;
+            min-height: 100vh; /* Ocupa a tela inteira */
+        }
+
+        /* Estilo para Botão de Destaque (Laranja/Dourado) */
+        .cta-button {
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            box-shadow: 0 4px 15px rgba(244, 162, 97, 0.7);
+            transform: translateY(-2px);
+        }
+
+        /* Estilo para Títulos em Montserrat */
+        .title-font {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Estilo para títulos de seção */
+        .section-title {
+            color: var(--color-primary);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+        }
+
+        /* Animação de expansão/pulsação para o WhatsApp */
+        @keyframes whatsapp-pulse {
+            0% { 
+                box-shadow: 0 0 0 0px rgba(37, 211, 102, 0.7); 
+            }
+            100% { 
+                box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); 
+            }
+        }
+
+        /* Estilo para o botão flutuante do WhatsApp com animação */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            /* Aplica a animação de pulsação */
+            animation: whatsapp-pulse 2s infinite;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Estilo para link de navegação ativo (definido via JS IntersectionObserver) */
+        .nav-link.is-active {
+            color: var(--color-accent) !important; /* Cor Laranja/Dourado */
+            font-weight: 700 !important; /* Negrito */
+            border-bottom: 2px solid var(--color-accent);
+            padding-bottom: 5px;
+        }
+
+        /* Ajustes para links de navegação específicos */
+        a[href="#home"].nav-link.is-active {
+             border-bottom: none;
+             color: var(--color-primary) !important;
+        }
+        
+        a[href="#contato"].nav-link {
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+        }
+        a[href="#contato"].nav-link.is-active {
+            background-color: var(--color-primary) !important;
+            color: white !important;
+            border-bottom: none;
+        }
+        
+        /* Estilo do card de Depoimento */
+        .testimonial-card {
+            border-left: 5px solid var(--color-accent);
+        }
+
+        /* Botão Flutuante do Chat IA */
+        .ai-chat-float {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            padding: 10px 15px;
+            border-radius: 9999px; /* Full rounded */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .ai-chat-float:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        /* Estilo do balão de chat (Gemini) */
+        .chat-message.gemini {
+            background-color: #e5e7eb; /* Light gray */
+            border-radius: 1rem 1rem 1rem 0;
+            max-width: 90%;
+            white-space: pre-wrap;
+        }
+        /* Estilo do balão de chat (Usuário) */
+        .chat-message.user {
+            background-color: var(--color-primary);
+            color: white;
+            border-radius: 1rem 1rem 0 1rem;
+            max-width: 90%;
+            white-space: pre-wrap;
+        }
+
+        /* --- INÍCIO DO EFEITO GLOW PREMIUM (STRIPE STYLE) --- */
+        @property --glow-angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+        @keyframes rotate-glow-border {
+            0% { --glow-angle: 0deg; }
+            100% { --glow-angle: 360deg; }
+        }
+        @keyframes pan-glow-border {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        #servicos .space-y-16 > div,
+        #ofertas .tab-content .pricing-card.bg-white {
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        #servicos .space-y-16 > div:hover,
+        #ofertas .tab-content .pricing-card.bg-white:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 58, 99, 0.25);
+        }
+
+        #servicos .space-y-16 > div::before,
+        #ofertas .tab-content .pricing-card.bg-white::before {
+            content: "";
+            position: absolute;
+            inset: -2px; 
+            z-index: -1; 
+            border-radius: 0.875rem; 
+            pointer-events: none; 
+            background: linear-gradient(
+                90deg, 
+                transparent 0%, 
+                var(--color-primary) 20%, 
+                var(--color-accent) 50%, 
+                var(--color-primary) 80%, 
+                transparent 100%
+            );
+            background-size: 200% 100%;
+            animation: pan-glow-border 5s linear infinite;
+            padding: 2px;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.35; 
+            transition: opacity 0.3s ease-out;
+            will-change: opacity;
+        }
+
+        @supports (background: conic-gradient(from 0deg, red, blue)) {
+            #servicos .space-y-16 > div::before,
+            #ofertas .tab-content .pricing-card.bg-white::before {
+                background: conic-gradient(
+                    from var(--glow-angle), transparent 60%, var(--color-primary) 85%, var(--color-accent) 95%, transparent 100%
+                );
+                animation: rotate-glow-border 5s linear infinite;
+            }
+        }
+        #servicos .space-y-16 > div:hover::before,
+        #ofertas .tab-content .pricing-card.bg-white:hover::before { opacity: 1; }
+        /* --- FIM DO EFEITO GLOW PREMIUM --- */
+
+        /* --- INÍCIO DO SCROLL REVEAL CINEMATOGRÁFICO --- */
+        body .reveal-element {
+            opacity: 0;
+            transform: translateY(40px) !important; 
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1) !important, 
+                        transform 0.8s cubic-bezier(0.23, 1, 0.32, 1) !important;
+            will-change: opacity, transform;
+            pointer-events: none; 
+        }
+
+        body .reveal-element.reveal-visible {
+            opacity: 1;
+            transform: translateY(0) !important;
+            pointer-events: auto;
+        }
+        /* --- FIM DO SCROLL REVEAL CINEMATOGRÁFICO --- */
+
+        /* --- INÍCIO DO SLIDER DE COMPARAÇÃO ANTES/DEPOIS --- */
+        .comparison-slider {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4/3;
+            overflow: hidden;
+            touch-action: pan-y; 
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: col-resize;
+            background-color: #e5e7eb;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease;
+        }
+
+        .comparison-slider:hover {
+            transform: scale(1.02);
+            z-index: 10;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .comparison-slider img {
+            pointer-events: none; 
+        }
+
+        .comparison-before {
+            will-change: clip-path; 
+        }
+
+        .comparison-handle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--color-accent);
+            z-index: 20;
+            transform: translateX(-50%);
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+            will-change: left;
+        }
+
+        .comparison-handle-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px;
+            height: 44px;
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .comparison-slider:hover .comparison-handle-btn {
+            transform: translate(-50%, -50%) scale(1.15);
+        }
+
+        .comparison-label {
+            position: absolute;
+            bottom: 1rem;
+            padding: 0.3rem 1rem;
+            background-color: rgba(0, 58, 99, 0.85);
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            z-index: 30;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        /* --- FIM DO SLIDER DE COMPARAÇÃO --- */
+
+    </style>
+    <!-- Open Graph / SEO -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Novo Olhar — Transforme suas imagens com IA">
+    <meta property="og:description" content="Melhoria de produtos, modelos virtuais e criação de artes com Inteligência Artificial. Qualidade profissional, preços justos.">
+    <meta property="og:image" content="logo_og.jpeg">
+    <meta property="og:url" content="https://novoolhar.netlify.app">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="description" content="Melhoria de produtos, modelos virtuais e criação de artes com IA. Qualidade profissional para mini-empresas.">
+    <link rel="icon" type="image/jpeg" href="logo_navbar.jpeg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="antialiased">
+
+    <!-- Navbar Fixa -->
+    <nav class="fixed top-0 left-0 right-0 z-40 bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="#home" class="nav-link"><img src="logo_navbar.jpeg" alt="Novo Olhar" style="height:40px; width:auto;"></a>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#sobre-nos" class="nav-link text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition">Sobre Nós</a>
+                        <a href="#servicos" class="nav-link text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition">Serviços</a>
+                        <a href="#depoimentos" class="nav-link text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition">Depoimentos</a>
+                        <a href="#portfolio" class="nav-link text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition">Portfólio</a>
+                        <a href="#ofertas" class="nav-link text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition">Ofertas</a>
+                        <a href="#contato" class="nav-link text-white px-4 py-2 rounded-full text-sm font-medium">Contacto</a>
+                    </div>
+                </div>
+                <button class="md:hidden text-gray-500 hover:text-gray-800" id="mobileMenuBtn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div class="md:hidden hidden" id="mobileMenuContent">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-center">
+                <a href="#sobre-nos" class="nav-link block text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium transition">Sobre Nós</a>
+                <a href="#servicos" class="nav-link block text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium transition">Serviços</a>
+                <a href="#depoimentos" class="nav-link block text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium transition">Depoimentos</a>
+                <a href="#portfolio" class="nav-link block text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium transition">Portfólio</a>
+                <a href="#ofertas" class="nav-link block text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium transition">Ofertas</a>
+                <a href="#contato" class="nav-link block text-white px-4 py-2 rounded-full text-base font-medium" style="background-color: var(--color-accent);">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 1. Seção Home - Banner Principal -->
+    <header id="home" class="section-observer home-section flex items-center justify-center p-8 pt-24 md:pt-32" style="background-image: url('Hero.jpeg'); background-size: cover; background-position: center; background-blend-mode: multiply;">
+        <div class="max-w-5xl text-center z-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold title-font mb-4 text-white">Novo Olhar</h1>
+            <p class="text-xl md:text-2xl font-light mb-8 italic opacity-80">
+                Um novo olhar para suas fotos e produtos ✨
+            </p>
+            <h2 class="title-font text-4xl sm:text-5xl md:text-7xl font-bold leading-tight mb-8">
+                Transforme suas imagens com a <span class="text-yellow-400">Inteligência Artificial</span>.
+            </h2>
+            <p class="text-lg md:text-xl mb-12 max-w-3xl mx-auto opacity-90">
+                Qualidade profissional, entregas rápidas e preços justos para a sua mini-empresa.
+            </p>
+            <button id="openModalBtn" class="cta-button title-font font-bold uppercase tracking-wider px-12 py-5 rounded-full shadow-xl text-lg md:text-xl">
+                Começar Teste Grátis!
+            </button>
+        </div>
+    </header>
+
+    <!-- 2. Seção Sobre Nós -->
+    <section id="sobre-nos" class="section-observer py-20 md:py-28 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="section-title text-3xl md:text-4xl text-center mb-12">
+                A História Por Trás do Novo Olhar
+            </h2>
+            <div class="flex flex-col lg:flex-row items-center gap-10">
+                <div class="lg:w-1/2">
+                    <img loading="lazy" src="Sobre Nos.jpeg" alt="Imagem de empreendedor digital trabalhando com foco" class="w-full rounded-xl shadow-2xl transition duration-500 hover:scale-[1.02]">
+                </div>
+                <div class="lg:w-1/2 text-lg space-y-6">
+                    <p class="font-semibold text-xl" style="color: var(--color-primary);">Tudo começou com uma frustração bem real.</p>
+                    <p>Nós tentamos vender alguns produtos online e ficamos parados na mesma barreira que você: **o produto era incrível, mas as fotos eram de doer.** Eram escuras, o fundo não ajudava, e pareciam amadoras demais para competir. Resultado? Ninguém clicava, e muito menos comprava.</p>
+                    <p>Se você é um empreendedor que faz tudo no seu negócio — atende, gerencia, e ainda precisa criar conteúdo... a gente te entende. Você tem pouco dinheiro, muita garra, e a última coisa que precisa é gastar horas aprendendo ferramentas de edição complexas.</p>
+                    <p class="font-semibold">É por isso que criamos o Novo Olhar, usando o poder da IA para tirar o trabalho pesado da produção visual das suas costas.</p>
+                    <p class="text-base italic text-gray-500">Não somos apenas um robô. Somos IA trabalhando junto com o olho humano.</p>
+                    <div class="text-center pt-4">
+                        <a href="#contato" class="inline-block cta-button title-font font-bold uppercase tracking-wider px-8 py-3 rounded-full shadow-md text-base">
+                            Venha ver como podemos ajudar sua loja a brilhar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Seção Serviços - FUNIL DE CONVERSÃO -->
+    <section id="servicos" class="section-observer py-20 md:py-28 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-3xl md:text-4xl mb-4">
+                    ✨ Serviços que Transformam
+                </h2>
+                <p class="text-xl max-w-3xl mx-auto">
+                    No Novo Olhar, acreditamos que cada imagem tem o poder de contar uma história. Usamos tecnologia de ponta em Inteligência Artificial para elevar a apresentação das suas fotos e produtos.
+                </p>
+            </div>
+
+            <!-- Grid de Serviços -->
+            <div class="space-y-16">
+                
+                <!-- Serviço 1: Modelos Virtuais -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-8 bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+                    <div class="lg:w-1/3">
+                        <div class="relative w-full max-w-xl mx-auto overflow-hidden rounded-xl group custom-slider-container" style="aspect-ratio: 4/3;">
+                            <img loading="lazy" src="Depois 6MV.png" class="w-full h-full object-contain select-none pointer-events-none" />
+                            <div class="absolute top-0 left-0 h-full w-1/2 overflow-hidden custom-slider-mask">
+                                <img loading="lazy" src="Antes 6MV.jpeg" class="h-full object-contain select-none pointer-events-none" style="max-width: none;" />
+                            </div>
+                            <div class="absolute top-0 left-1/2 h-full w-[2px] bg-white z-10 cursor-ew-resize custom-slider-handle"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-white text-black px-2 py-1 rounded-full text-xs cursor-ew-resize shadow custom-slider-btn">↔</div>
+                            <span class="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded z-30">ANTES</span>
+                            <span class="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded z-30">DEPOIS</span>
+                        </div>
+                    </div>
+                    <div class="lg:w-2/3 space-y-4">
+                        <h3 class="title-font font-bold text-2xl md:text-3xl" style="color: var(--color-primary);">
+                            Modelos Virtuais para Moda
+                        </h3>
+                        <p class="text-gray-700">
+                            Apresente sua coleção de roupas de forma inovadora e prática. Criamos modelos virtuais realistas, desenvolvidos por IA, que vestem suas peças com naturalidade e estilo.
+                        </p>
+                        <!-- GATILHO FUNIL: Redireciona para ofertas e abre a aba Modelos -->
+                        <a href="#ofertas" onclick="document.querySelector('.tab-button[data-target=\'modelos-virtuais\']').click();" class="inline-block cta-button px-6 py-2 rounded-full font-semibold text-sm">
+                            Ver Ofertas e Planos
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Serviço 2: Melhoria Imagens -->
+                <div class="flex flex-col lg:flex-row items-center gap-8 bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+                    <div class="lg:w-1/3">
+                        <div class="relative w-full max-w-xl mx-auto overflow-hidden rounded-xl group custom-slider-container" style="aspect-ratio: 4/3;">
+                            <img loading="lazy" src="Depois MP.png" class="w-full h-full object-contain select-none pointer-events-none" />
+                            <div class="absolute top-0 left-0 h-full w-1/2 overflow-hidden custom-slider-mask">
+                                <img loading="lazy" src="Antes MP.jpg" class="h-full object-contain select-none pointer-events-none" style="max-width: none;" />
+                            </div>
+                            <div class="absolute top-0 left-1/2 h-full w-[2px] bg-white z-10 cursor-ew-resize custom-slider-handle"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-white text-black px-2 py-1 rounded-full text-xs cursor-ew-resize shadow custom-slider-btn">↔</div>
+                            <span class="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded z-30">ANTES</span>
+                            <span class="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded z-30">DEPOIS</span>
+                        </div>
+                    </div>
+                    <div class="lg:w-2/3 space-y-4">
+                        <h3 class="title-font font-bold text-2xl md:text-3xl" style="color: var(--color-primary);">
+                            Melhoria de Imagens de Produtos (2K)
+                        </h3>
+                        <p class="text-gray-700">
+                            Destaque seus produtos com qualidade profissional. Nossos serviços de aprimoramento elevam suas fotos para até 2K de resolução, com cores vibrantes e foco nítido.
+                        </p>
+                        <!-- GATILHO FUNIL: Redireciona para ofertas e abre a aba Melhoria -->
+                        <a href="#ofertas" onclick="document.querySelector('.tab-button[data-target=\'melhoria-produtos\']').click();" class="inline-block cta-button px-6 py-2 rounded-full font-semibold text-sm">
+                            Ver Ofertas e Planos
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Serviço 3: Criação Artes -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-8 bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
+                    <div class="lg:w-1/3">
+                        <div class="relative w-full max-w-xl mx-auto overflow-hidden rounded-xl group custom-slider-container" style="aspect-ratio: 4/3;">
+                            <img loading="lazy" src="Depois 1CA.png" class="w-full h-full object-contain select-none pointer-events-none" />
+                            <div class="absolute top-0 left-0 h-full w-1/2 overflow-hidden custom-slider-mask">
+                                <img loading="lazy" src="Antes 1CA.jpeg" class="h-full object-contain select-none pointer-events-none" style="max-width: none;" />
+                            </div>
+                            <div class="absolute top-0 left-1/2 h-full w-[2px] bg-white z-10 cursor-ew-resize custom-slider-handle"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-white text-black px-2 py-1 rounded-full text-xs cursor-ew-resize shadow custom-slider-btn">↔</div>
+                            <span class="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded z-30">ANTES</span>
+                            <span class="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded z-30">DEPOIS</span>
+                        </div>
+                    </div>
+                    <div class="lg:w-2/3 space-y-4">
+                        <h3 class="title-font font-bold text-2xl md:text-3xl" style="color: var(--color-primary);">
+                            Criação de Artes para Anúncios
+                        </h3>
+                        <p class="text-gray-700">
+                            Chame a atenção do seu público com artes criadas especialmente para campanhas digitais. Desenvolvemos peças visuais impactantes e ideais para anúncios.
+                        </p>
+                        <!-- GATILHO FUNIL: Redireciona para ofertas e abre a aba Artes -->
+                        <a href="#ofertas" onclick="document.querySelector('.tab-button[data-target=\'criacao-artes\']').click();" class="inline-block cta-button px-6 py-2 rounded-full font-semibold text-sm">
+                            Ver Ofertas e Planos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Seção Depoimentos -->
+    <section id="depoimentos" class="section-observer py-20 md:py-28 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="section-title text-3xl md:text-4xl text-center mb-16">
+                Eles transformaram suas fotos... e suas vendas 🚀
+            </h2>
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-gray-50 p-6 rounded-xl shadow-lg testimonial-card">
+                    <i class="fas fa-quote-left text-3xl mb-4" style="color: var(--color-accent);"></i>
+                    <p class="italic text-gray-700 mb-6 text-lg">
+                        "Meu custo com fotos caiu 80%! Agora, as fotos chegam em dias, e com qualidade de passarela. Os modelos virtuais convenceram meus clientes e as **vendas subiram 40%**!"
+                    </p>
+                    <div class="flex items-center">
+                        <i class="fas fa-user-circle text-4xl mr-3" style="color: var(--color-primary);"></i>
+                        <div><p class="font-bold title-font" style="color: var(--color-primary);">Carla M.</p><p class="text-sm text-gray-600">Dona da 'Doce Mania Boutique'</p></div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl shadow-lg testimonial-card">
+                    <i class="fas fa-quote-left text-3xl mb-4" style="color: var(--color-accent);"></i>
+                    <p class="italic text-gray-700 mb-6 text-lg">
+                        "O Novo Olhar tirou o fundo feio da minha mesa e deu um foco nítido em 2K. A diferença é surreal. Eu tinha zero vendas por 50 cliques. **Hoje tenho 5-6 vendas por dia!**"
+                    </p>
+                    <div class="flex items-center">
+                        <i class="fas fa-user-circle text-4xl mr-3" style="color: var(--color-primary);"></i>
+                        <div><p class="font-bold title-font" style="color: var(--color-primary);">Pedro A.</p><p class="text-sm text-gray-600">Artesão da 'Cantinho do Artesanato'</p></div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl shadow-lg testimonial-card">
+                    <i class="fas fa-quote-left text-3xl mb-4" style="color: var(--color-accent);"></i>
+                    <p class="italic text-gray-700 mb-6 text-lg">
+                        "Contratamos o pacote de artes para anúncios. Em 48h recebemos variações impactantes. O Custo por Aquisição (**CPA reduziu 25%**) e a campanha voltou a respirar!"
+                    </p>
+                    <div class="flex items-center">
+                        <i class="fas fa-user-circle text-4xl mr-3" style="color: var(--color-primary);"></i>
+                        <div><p class="font-bold title-font" style="color: var(--color-primary);">Joana F.</p><p class="text-sm text-gray-600">Gestora de Tráfego da 'Mundo Fitness'</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="depoimentos.html" class="inline-flex items-center font-bold text-lg hover:underline transition duration-300" style="color: var(--color-primary);">
+                    Ver Todos os Depoimentos <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Seção Portfólio -->
+    <section id="portfolio" class="section-observer py-20 md:py-28 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="section-title text-3xl md:text-4xl text-center mb-12">Portfólio: O Poder do Antes e Depois</h2>
+            <p class="text-center text-lg max-w-4xl mx-auto mb-12 text-gray-700">Arraste a linha central para comparar os resultados da nossa tecnologia em tempo real.</p>
+
+            <div class="flex justify-center space-x-2 md:space-x-4 mb-12">
+                <button class="portfolio-tab-button px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base transition duration-300 shadow-md" data-target="portfolio-melhoria" style="background-color: var(--color-accent); color: var(--color-primary);">Melhoria de Produtos</button>
+                <button class="portfolio-tab-button px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base bg-white text-gray-700 hover:bg-gray-200 transition duration-300 shadow-md" data-target="portfolio-modelos">Modelos Virtuais</button>
+                <button class="portfolio-tab-button px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base bg-white text-gray-700 hover:bg-gray-200 transition duration-300 shadow-md" data-target="portfolio-artes">Criação de Artes</button>
+            </div>
+
+            <div id="portfolio-content-container">
+                <!-- 5.1 Melhoria -->
+                <div id="portfolio-melhoria" class="portfolio-tab-content grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 1MP.png" alt="Depois da Melhoria" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/003A63/F4A261?text=PRODUTO+1%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 1MP.jpg" alt="Antes da Melhoria" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=PRODUTO+1%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+                    
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 5MP.png" alt="Depois" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/FFFFFF/003A63?text=PRODUTO+2%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 5MP.jpeg" alt="Antes" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=PRODUTO+2%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 6MP.png" alt="Depois" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/FFFFFF/003A63?text=PRODUTO+3%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 6MP.jpeg" alt="Antes" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=PRODUTO+3%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 8MP.png" alt="Depois" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/FFFFFF/003A63?text=PRODUTO+4%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 8MP.jpeg" alt="Antes" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=PRODUTO+4%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+                </div>
+                <!-- 5.2 Modelos Virtuais -->
+                <div id="portfolio-modelos" class="portfolio-tab-content hidden grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 2MV.png" alt="Depois" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/003A63/F4A261?text=MODELO+1%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 2MV.jpeg" alt="Antes" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=MODELO+1%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 3MV.png" alt="Depois" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/003A63/F4A261?text=MODELO+2%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 3MV.jpeg" alt="Antes" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=MODELO+2%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 4MV.png" alt="Depois" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/003A63/F4A261?text=MODELO+3%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 4MV.jpeg" alt="Antes" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=MODELO+3%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 5MV.png" alt="Depois" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/003A63/F4A261?text=MODELO+4%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 5MV.jpeg" alt="Antes" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=MODELO+4%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+                </div>
+                <!-- 5.3 Criação de Artes -->
+                <div id="portfolio-artes" class="portfolio-tab-content hidden grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 2CA.png" alt="Depois" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/003A63/F4A261?text=ARTE+1%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 2CA.jpeg" alt="Antes" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=ARTE+1%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 3CA.png" alt="Depois" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/003A63/F4A261?text=ARTE+2%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 3CA.jpeg" alt="Antes" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=ARTE+2%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 4CA.png" alt="Depois" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/003A63/F4A261?text=ARTE+3%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 4CA.jpeg" alt="Antes" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=ARTE+3%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+                    <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                        <img loading="lazy" src="Depois 5CA.png" alt="Depois" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/003A63/F4A261?text=ARTE+4%0ADEPOIS'">
+                        <div class="comparison-label right-4">DEPOIS</div>
+                        <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                            <img loading="lazy" src="Antes 5CA.jpeg" alt="Antes" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=ARTE+4%0AANTES'">
+                            <div class="comparison-label left-4">ANTES</div>
+                        </div>
+                        <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                    </div>
+                </div>
+                </div>
+            
+            <div class="text-center mt-12">
+                <a id="portfolio-cta-btn" href="#ofertas" class="inline-block cta-button px-8 py-3 rounded-full font-bold text-lg">
+                    Pedir Orçamento — Melhoria de Produtos
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Seção Ofertas e Preços - ENRIQUECIDA PARA FUNIL DE CONVERSÃO -->
+    <section id="ofertas" class="section-observer py-20 md:py-28 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="section-title text-3xl md:text-4xl text-center mb-12">
+                Planos e Preços Especiais
+            </h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-12 text-gray-700">
+                Soluções flexíveis para o seu negócio. Escolha o serviço que melhor se adapta à sua necessidade!
+            </p>
+
+            <!-- Abas de Serviços (Tabs) -->
+            <div class="flex justify-center space-x-2 md:space-x-4 mb-12">
+                <button class="tab-button px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base transition duration-300 shadow-md" data-target="melhoria-produtos" style="background-color: var(--color-accent); color: var(--color-primary);">Melhoria de Produtos</button>
+                <button class="tab-button px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-300 shadow-md" data-target="modelos-virtuais">Modelos Virtuais</button>
+                <button class="tab-button px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-300 shadow-md" data-target="criacao-artes">Criação de Artes</button>
+            </div>
+
+            <!-- Conteúdo das Abas (Transformado em Landing Pages miniatura) -->
+            <div id="tab-content-container">
+
+                <!-- 6.1. Oferta: Melhoria de Imagens de Produtos -->
+                <div id="melhoria-produtos" class="tab-content grid grid-cols-1 gap-12 w-full">
+                    
+                    <!-- Header da Oferta -->
+                    <div class="text-center">
+                        <h3 class="title-font text-3xl font-bold" style="color: var(--color-primary);">Melhoria de Imagens de Produtos</h3>
+                        <p class="text-gray-600 mt-2 max-w-2xl mx-auto text-lg">Aumente o valor percebido dos seus produtos com resolução 2K/4K, fundos perfeitos e correção de cores com Inteligência Artificial.</p>
+                    </div>
+
+                    <!-- Slider + Benefícios -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                            <img loading="lazy" src="Depois 9MP.png" alt="Depois da Melhoria" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/003A63/F4A261?text=PRODUTO%0ADEPOIS'">
+                            <div class="comparison-label right-4">DEPOIS</div>
+                            <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                                <img loading="lazy" src="Antes 9MP.jpeg" alt="Antes da Melhoria" class="absolute inset-0 w-full h-full object-contain" onerror="this.src='https://placehold.co/800x600/F0F0F0/003A63?text=PRODUTO%0AANTES'">
+                                <div class="comparison-label left-4">ANTES</div>
+                            </div>
+                            <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                        </div>
+
+                        <div class="bg-gray-50 p-8 rounded-xl shadow-md border-l-4" style="border-color: var(--color-primary);">
+                            <h4 class="font-bold text-xl mb-6" style="color: var(--color-primary);">Vantagens deste serviço:</h4>
+                            <ul class="space-y-4 text-gray-700">
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Remoção de fundos complexos e sombras indesejadas.</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Resolução cristalina até 4K para zoom perfeito no E-commerce.</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Correção de cor e iluminação de nível profissional.</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Comprovado: Maior taxa de conversão na sua loja.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Preços -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="pricing-card bg-gray-100 p-8 rounded-xl shadow-xl border-t-8 border-gray-300 text-center">
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Pacote Básico</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);">1 Foto</p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">13€</p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Resolução 2K</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Fundo simples</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Ajuste de cores com IA</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Edição manual</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Entrega em 24–48h</li>
+                            </ul>
+                            <!-- FECHAMENTO WHATSAPP -->
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20o%20Pacote%20Básico%20(13€)%20para%20Melhoria%20de%20Imagens" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Contratar via WhatsApp
+                            </a>
+                        </div>
+
+                        <div class="pricing-card bg-white p-8 rounded-xl shadow-2xl border-t-8" style="border-color: var(--color-accent);">
+                            <div class="mb-4">
+                                <span class="inline-block bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase">Mais Popular</span>
+                            </div>
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Plano Intermediário</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);">5 Fotos</p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">55€ <span class="text-base font-normal text-gray-500 line-through">65€</span></p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Resolução 2K</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Fundo de estúdio</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Ajuste de cores com IA</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> 1 revisão grátis</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Ideal para lojas online</li>
+                            </ul>
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20o%20Plano%20Intermediário%20(55€)%20para%20Melhoria%20de%20Imagens" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Contratar via WhatsApp
+                            </a>
+                        </div>
+
+                        <div class="pricing-card bg-white p-8 rounded-xl shadow-2xl border-t-8" style="border-color: var(--color-primary);">
+                            <div class="mb-4">
+                                <span class="inline-block bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase">Melhor Valor</span>
+                            </div>
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Pacote Profissional</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);">15 Fotos</p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">145€ <span class="text-base font-normal text-gray-500 line-through">195€</span></p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Resolução 4K (Ultra HD)</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Cenários temáticos</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Curadoria humana incluída</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Suporte prioritário</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Pronto para anúncios e e-commerce</li>
+                            </ul>
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20o%20Pacote%20Profissional%20(145€)%20para%20Melhoria%20de%20Imagens" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Contratar via WhatsApp
+                            </a>
+                        </div>
+
+                        <div class="pricing-card bg-gray-100 p-8 rounded-xl shadow-xl border-t-8 border-gray-300 text-center">
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Plano Customizado</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);"><i class="fas fa-star-of-life text-3xl"></i></p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">Orçamento</p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Mais de 15 fotos</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Integração e-commerce</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Processamento em massa</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Requisitos específicos</li>
+                            </ul>
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20solicitar%20um%20Orçamento%20Customizado%20para%20Melhoria%20de%20Imagens" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Falar com Especialista
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6.2. Oferta: Modelos Virtuais -->
+                <div id="modelos-virtuais" class="tab-content hidden grid-cols-1 gap-12 w-full">
+                    
+                    <!-- Header -->
+                    <div class="text-center">
+                        <h3 class="title-font text-3xl font-bold" style="color: var(--color-primary);">Modelos Virtuais para Moda</h3>
+                        <p class="text-gray-600 mt-2 max-w-2xl mx-auto text-lg">Mostre o caimento perfeito das suas roupas de forma realista sem os custos massivos de uma agência de modelos tradicional.</p>
+                    </div>
+
+                    <!-- Slider + Benefícios -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                            <img loading="lazy" src="Depois 10MV.png" alt="Depois - Modelo IA" class="absolute inset-0 w-full h-full object-contain">
+                            <div class="comparison-label right-4">DEPOIS</div>
+                            <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                                <img loading="lazy" src="Antes 10MV.jpeg" alt="Antes - Sem Modelo" class="absolute inset-0 w-full h-full object-contain">
+                                <div class="comparison-label left-4">ANTES</div>
+                            </div>
+                            <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                        </div>
+
+                        <div class="bg-gray-50 p-8 rounded-xl shadow-md border-l-4" style="border-color: var(--color-primary);">
+                            <h4 class="font-bold text-xl mb-6" style="color: var(--color-primary);">Por que digitalizar seu catálogo?</h4>
+                            <ul class="space-y-4 text-gray-700">
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Redução drástica de custos com estúdio, fotógrafos e casting.</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Diversidade total: Escolha perfis e biotipos alinhados à sua marca.</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Apresentação ultra-realista de dobras, caimentos e texturas.</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Escala rápida: Lance dezenas de novas peças online em poucos dias.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Preços -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="pricing-card bg-gray-100 p-8 rounded-xl shadow-xl border-t-8 border-gray-300 text-center">
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Modelo Único</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);">1 Peça</p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">29€</p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> 1 peça de roupa</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Modelo realista</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Posição fixa</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Resolução 2K</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Fundo simples</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Perfeito para testar</li>
+                            </ul>
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20o%20plano%20Modelo%20Único%20(29€)%20para%20Modelos%20Virtuais" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Contratar via WhatsApp
+                            </a>
+                        </div>
+                        
+                        <div class="pricing-card bg-white p-8 rounded-xl shadow-2xl border-t-8" style="border-color: var(--color-accent);">
+                            <div class="mb-4">
+                                <span class="inline-block bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase">Mais Popular</span>
+                            </div>
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Pacote Essencial</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);">5 Peças</p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">120€</p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> 5 peças de roupa</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Variação de poses</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Múltiplos fundos</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Qualidade otimizada</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Ideal para pequenas lojas</li>
+                            </ul>
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20o%20Pacote%20Essencial%20(120€)%20para%20Modelos%20Virtuais" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Contratar via WhatsApp
+                            </a>
+                        </div>
+
+                        <div class="pricing-card bg-white p-8 rounded-xl shadow-2xl border-t-8" style="border-color: var(--color-primary);">
+                            <div class="mb-4">
+                                <span class="inline-block bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase">Melhor Valor</span>
+                            </div>
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Estúdio Virtual</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);">10 Peças</p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">250€</p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> 10 peças de roupa</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Múltiplas poses e ângulos</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Cenários personalizados</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Curadoria humana especializada</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Ideal para catálogos e e-commerce</li>
+                            </ul>
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20o%20plano%20Estúdio%20Virtual%20(250€)%20para%20Modelos%20Virtuais" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Contratar via WhatsApp
+                            </a>
+                        </div>
+
+                        <div class="pricing-card bg-gray-100 p-8 rounded-xl shadow-xl border-t-8 border-gray-300 text-center">
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Plano Customizado</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);"><i class="fas fa-star-of-life text-3xl"></i></p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">Orçamento</p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Grandes volumes</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Campanhas completas</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Ajustes personalizados</li>
+                            </ul>
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20solicitar%20um%20Orçamento%20Customizado%20para%20Modelos%20Virtuais" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Falar com Especialista
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6.3. Oferta: Criação de Artes -->
+                <div id="criacao-artes" class="tab-content hidden grid-cols-1 gap-12 w-full">
+                    
+                    <!-- Header -->
+                    <div class="text-center">
+                        <h3 class="title-font text-3xl font-bold" style="color: var(--color-primary);">Criação de Artes para Anúncios</h3>
+                        <p class="text-gray-600 mt-2 max-w-2xl mx-auto text-lg">Pare o scroll do seu potencial cliente nas redes sociais com criativos de alta conversão estruturados por Inteligência Artificial.</p>
+                    </div>
+
+                    <!-- Slider + Benefícios -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        <div class="comparison-slider rounded-xl shadow-2xl border-4" style="border-color: var(--color-accent);">
+                            <img loading="lazy" src="Depois 6CA.png" alt="Depois - Arte Final" class="absolute inset-0 w-full h-full object-contain">
+                            <div class="comparison-label right-4">DEPOIS</div>
+                            <div class="comparison-before absolute inset-0 w-full h-full z-10" style="clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                                <img loading="lazy" src="Antes 6CA.jpeg" alt="Antes - Foto Pura" class="absolute inset-0 w-full h-full object-contain">
+                                <div class="comparison-label left-4">ANTES</div>
+                            </div>
+                            <div class="comparison-handle" style="left: 50%;"><div class="comparison-handle-btn"><i class="fas fa-arrows-alt-h"></i></div></div>
+                        </div>
+
+                        <div class="bg-gray-50 p-8 rounded-xl shadow-md border-l-4" style="border-color: var(--color-primary);">
+                            <h4 class="font-bold text-xl mb-6" style="color: var(--color-primary);">Aumente o seu ROI em tráfego:</h4>
+                            <ul class="space-y-4 text-gray-700">
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Design meticulosamente focado em aumentar o seu CTR (Taxa de Clique).</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Geração de múltiplas variações ideais para fase de Teste A/B.</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Formatos com adaptação perfeita para Reels, Stories, TikTok e Feed.</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i> Textos persuasivos (Copywriting) embuitidos nativamente na arte.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Preços -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="pricing-card bg-gray-100 p-8 rounded-xl shadow-xl border-t-8 border-gray-300 text-center">
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Arte Rápida</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);">1 Arte</p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">45€</p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> 1 arte</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Otimizada para anúncios</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> 1 copy incluída</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Entrega em até 72h</li>
+                            </ul>
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20o%20plano%20Arte%20Rápida%20(45€)%20para%20Criação%20de%20Artes" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Contratar via WhatsApp
+                            </a>
+                        </div>
+                        
+                        <div class="pricing-card bg-white p-8 rounded-xl shadow-2xl border-t-8" style="border-color: var(--color-accent);">
+                            <div class="mb-4">
+                                <span class="inline-block bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase">Mais Popular</span>
+                            </div>
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Pacote A/B Teste</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);">3 Artes</p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">110€</p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> 3 artes</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Variações para teste A/B</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Otimização psicológica</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Entrega em 48h</li>
+                            </ul>
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20o%20Pacote%20A/B%20Teste%20(110€)%20para%20Criação%20de%20Artes" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Contratar via WhatsApp
+                            </a>
+                        </div>
+
+                        <div class="pricing-card bg-white p-8 rounded-xl shadow-2xl border-t-8" style="border-color: var(--color-primary);">
+                            <div class="mb-4">
+                                <span class="inline-block bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase">Melhor Valor</span>
+                            </div>
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Pacote Escala</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);">8 Artes</p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">240€</p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> 8 artes</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Múltiplas variações</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Foco em campanhas</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Otimizado para conversão</li>
+                            </ul>
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20o%20Pacote%20Escala%20(240€)%20para%20Criação%20de%20Artes" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Contratar via WhatsApp
+                            </a>
+                        </div>
+
+                        <div class="pricing-card bg-gray-100 p-8 rounded-xl shadow-xl border-t-8 border-gray-300 text-center">
+                            <h3 class="title-font text-2xl font-bold mb-4" style="color: var(--color-primary);">Plano Customizado</h3>
+                            <p class="text-5xl font-extrabold mb-2" style="color: var(--color-accent);"><i class="fas fa-star-of-life text-3xl"></i></p>
+                            <p class="text-3xl font-bold mb-6 text-gray-800">Orçamento</p>
+                            <ul class="text-left space-y-2 mb-8 text-gray-600 text-sm">
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Campanhas completas</li>
+                                <li class="flex items-start"><i class="fas fa-check-circle mt-1 mr-2" style="color: #25d366;"></i> Branding personalizado</li>
+                            </ul>
+                            <a href="https://wa.me/258834346527?text=Olá,%20quero%20solicitar%20um%20Orçamento%20Customizado%20para%20Criação%20de%20Artes" target="_blank" class="w-full inline-block cta-button px-4 py-3 rounded-full font-bold text-sm">
+                                Falar com Especialista
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- Fim do Conteúdo das Abas -->
+        </div>
+    </section>
+
+    <!-- 7. Seção Contato -->
+    <section id="contato" class="section-observer" style="background:#F8FAFC; padding: 80px 0;">
+        <style>
+            .no-info-card {
+                background: white;
+                border-radius: 24px;
+                padding: 40px;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+                border: 1px solid #f0f0f0;
+            }
+            .no-info-card h2 { color: #003A63; font-size: 1.8rem; font-weight: 800; margin: 0 0 12px; }
+            .no-info-card > p { color: #666; font-size: 0.95rem; line-height: 1.7; margin: 0 0 32px; }
+            .no-contact-item { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+            .no-contact-icon {
+                background: rgba(244,162,97,0.12);
+                padding: 12px; border-radius: 12px;
+                display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            }
+            .no-contact-label { font-weight: 700; color: #003A63; font-size: 0.9rem; margin-bottom: 2px; }
+            .no-contact-value { color: #888; font-size: 0.85rem; }
+            .no-whatsapp-btn {
+                display: flex; align-items: center; gap: 12px;
+                background: #25D366; color: white;
+                padding: 14px 24px; border-radius: 14px;
+                font-weight: 700; font-size: 0.95rem; text-decoration: none;
+                margin-top: 32px; transition: all 0.3s ease; width: fit-content;
+            }
+            .no-whatsapp-btn:hover { background: #1ebe5b; transform: translateY(-2px); box-shadow: 0 10px 24px rgba(37,211,102,0.3); }
+            .no-office-img { margin-top: 28px; border-radius: 16px; overflow: hidden; height: 200px; border: 1px solid #f0f0f0; }
+            .no-office-img img { width: 100%; height: 100%; object-fit: cover; }
+            .no-form-card {
+                background: white; border-radius: 24px; padding: 40px;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
+            }
+            .no-form-card h3 { color: #003A63; font-size: 1.3rem; font-weight: 700; margin: 0 0 24px; }
+            .no-field-group { margin-bottom: 18px; }
+            .no-label {
+                display: block; font-size: 0.7rem; font-weight: 700; color: #aaa;
+                text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; margin-left: 4px;
+            }
+            .no-input {
+                width: 100%; padding: 12px 16px; border-radius: 12px;
+                border: 2px solid #e8edf2; background: #f8fafc;
+                font-family: 'Poppins', sans-serif; font-size: 0.9rem; color: #003A63;
+                outline: none; transition: all 0.3s ease; box-sizing: border-box;
+            }
+            .no-input::placeholder { color: #bbb; }
+            .no-input:focus { border-color: #F4A261; background: white; box-shadow: 0 0 0 4px rgba(244,162,97,0.1); }
+            .no-submit-btn {
+                width: 100%; background: #F4A261; color: #003A63; border: none;
+                padding: 15px; border-radius: 14px; font-weight: 800; font-size: 0.9rem;
+                letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+                transition: all 0.3s ease; margin-top: 8px; font-family: 'Poppins', sans-serif;
+            }
+            .no-submit-btn:hover { background: #e5935a; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(244,162,97,0.3); }
+            .no-success-msg { display: none; text-align: center; padding: 32px; }
+            .no-contact-grid {
+                max-width: 1100px; margin: 0 auto; padding: 0 24px;
+                display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
+            }
+            @media (max-width: 768px) { .no-contact-grid { grid-template-columns: 1fr; } }
+        </style>
+
+        <!-- Hero strip -->
+        <div style="background:#003A63; color:white; text-align:center; padding: 50px 24px 80px; margin-bottom: -40px;">
+            <h2 class="title-font" style="font-size: clamp(1.8rem,4vw,3rem); font-weight:800; margin:0 0 10px;">
+                Vamos <span style="color:#F4A261;">Conversar?</span>
+            </h2>
+            <p style="color:#a0b4c8; font-size:1rem; margin:0;">Estamos prontos para transformar os teus produtos com inteligência visual ✨</p>
+        </div>
+
+        <div class="no-contact-grid">
+            <!-- Info card -->
+            <div class="no-info-card">
+                <h2>Contacta-nos</h2>
+                <p>Tens um projeto ou queres testar a nossa tecnologia nos teus produtos? Envia-nos uma mensagem ou fala connosco diretamente pelo WhatsApp.</p>
+
+                <div class="no-contact-item">
+                    <div class="no-contact-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#F4A261" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="no-contact-label">E-mail</div>
+                        <div class="no-contact-value">NovoOlhar268@gmail.com</div>
+                    </div>
+                </div>
+
+                <div class="no-contact-item">
+                    <div class="no-contact-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#F4A261" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="no-contact-label">Horário</div>
+                        <div class="no-contact-value">Sempre disponível</div>
+                    </div>
+                </div>
+
+                <a href="https://wa.me/258834346527" target="_blank" class="no-whatsapp-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.588-5.946 0-6.556 5.332-11.891 11.891-11.891 3.181 0 6.167 1.24 8.407 3.481 2.241 2.242 3.481 5.226 3.481 8.408 0 6.556-5.332 11.89-11.891 11.89-2.015 0-3.991-.512-5.747-1.487l-6.34 1.708zm6.103-3.61c1.589.943 3.144 1.42 4.731 1.42 5.51 0 9.991-4.482 9.991-9.992 0-2.668-1.038-5.176-2.924-7.063-1.886-1.887-4.394-2.924-7.064-2.924-5.509 0-9.99 4.482-9.99 9.991 0 1.936.561 3.765 1.621 5.295l-.94 3.435 3.596-.962z"/>
+                    </svg>
+                    Falar pelo WhatsApp
+                </a>
+
+                <div class="no-office-img">
+                    <img loading="lazy" src="Contatos.png" onerror="this.src='https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&q=80&w=800'" alt="Novo Olhar">
+                </div>
+            </div>
+
+            <!-- Form card -->
+            <div class="no-form-card">
+                <h3>Enviar Mensagem</h3>
+                <div id="no-form-body">
+                    <div class="no-field-group">
+                        <label class="no-label" for="no-nome">Nome Completo</label>
+                        <input type="text" id="no-nome" class="no-input" placeholder="Como te chamas?">
+                    </div>
+                    <div class="no-field-group">
+                        <label class="no-label" for="no-email">E-mail de Contacto</label>
+                        <input type="email" id="no-email" class="no-input" placeholder="teu@email.com">
+                    </div>
+                    <div class="no-field-group">
+                        <label class="no-label" for="no-telefone">Telefone (opcional)</label>
+                        <input type="tel" id="no-telefone" class="no-input" placeholder="+258 ...">
+                    </div>
+                    <div class="no-field-group">
+                        <label class="no-label" for="no-assunto">Assunto</label>
+                        <select id="no-assunto" class="no-input">
+                            <option>Melhoria de Produtos</option>
+                            <option>Modelos Virtuais</option>
+                            <option>Criação de Artes</option>
+                            <option>Outros Pedidos</option>
+                        </select>
+                    </div>
+                    <div class="no-field-group">
+                        <label class="no-label" for="no-mensagem">Mensagem</label>
+                        <textarea id="no-mensagem" rows="4" class="no-input" placeholder="Conta-nos o que precisas..."></textarea>
+                    </div>
+                    <button class="no-submit-btn" onclick="noEnviarForm()">Enviar Mensagem →</button>
+                </div>
+                <div class="no-success-msg" id="no-success-msg">
+                    <div style="font-size:3rem; margin-bottom:12px;">✅</div>
+                    <h4 style="color:#003A63; font-size:1.2rem; font-weight:700; margin-bottom:8px;">Mensagem Enviada!</h4>
+                    <p style="color:#888; font-size:0.9rem;">Entraremos em contacto contigo em breve.<br>Obrigado pela preferência!</p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        async function noEnviarForm() {
+            const nome = document.getElementById('no-nome').value.trim();
+            const email = document.getElementById('no-email').value.trim();
+            const mensagem = document.getElementById('no-mensagem').value.trim();
+            if (!nome || !email || !mensagem) {
+                alert('Por favor, preenche os campos obrigatórios: Nome, E-mail e Mensagem.');
+                return;
+            }
+            const assunto = document.getElementById('no-assunto').value;
+            const telefone = document.getElementById('no-telefone').value.trim();
+            try {
+                const res = await fetch('https://formspree.io/f/maqvjpvy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ nome, email, telefone, assunto, mensagem })
+                });
+                if (res.ok) {
+                    document.getElementById('no-form-body').style.display = 'none';
+                    document.getElementById('no-success-msg').style.display = 'block';
+                } else {
+                    alert('Erro ao enviar. Tenta novamente.');
+                }
+            } catch(e) {
+                alert('Erro de ligação. Tenta novamente.');
+            }
+        }
+        </script>
+    </section>
+
+    <!-- Rodapé -->
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            <!-- Informações da Marca -->
+            <div class="mb-6 md:mb-0">
+                <img src="logo_navbar.jpeg" alt="Novo Olhar" style="height:50px; width:auto; margin-bottom:8px;">
+                <p class="text-sm opacity-70">Transformando E-commerce com IA.</p>
+                <p class="text-xs opacity-50 mt-2">© 2025 Novo Olhar. Todos os direitos reservados.</p>
+            </div>
+            
+            <!-- Links de Navegação -->
+            <div class="flex space-x-6">
+                <a href="#sobre-nos" class="hover:text-gray-300 transition text-sm">Sobre Nós</a>
+                <a href="#servicos" class="hover:text-gray-300 transition text-sm">Serviços</a>
+                <a href="#depoimentos" class="hover:text-gray-300 transition text-sm">Depoimentos</a>
+                <a href="#contato" class="hover:text-gray-300 transition text-sm">Contacto</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botão Flutuante do WhatsApp -->
+    <a href="https://wa.me/258834346527" target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Botão Flutuante do Chat IA — DESACTIVADO (remover comentário para reativar)
+    <button id="openAIChatBtn" class="ai-chat-float" style="background-color: var(--color-primary); color: var(--color-accent);">
+        <i class="fas fa-robot mr-2"></i> Chat IA Gemini
+    </button>
+    -->
+    
+    <!-- 8. Modal para Teste Grátis / Chat IA -->
+    <div id="modal-test-gratis" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[1000] hidden p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
+            <!-- Cabeçalho do Modal -->
+            <div class="p-5 flex justify-between items-center" style="background-color: var(--color-primary); color: white;">
+                <h3 class="title-font text-xl font-bold flex items-center"><i class="fas fa-robot mr-2" style="color: var(--color-accent);"></i> Chat IA: Tire Suas Dúvidas</h3>
+                <button id="closeModalBtn" class="text-gray-300 hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <!-- Corpo do Modal (Chat) -->
+            <div class="p-5 h-[400px] flex flex-col">
+                <div id="chat-messages" class="flex-grow overflow-y-auto space-y-4 pb-4">
+                    <div class="flex justify-start">
+                        <div class="chat-message gemini p-3 shadow-md">
+                            Olá! Eu sou o assistente IA da Novo Olhar. Estou aqui para responder às suas dúvidas sobre os nossos serviços e planos de preços. Como posso ajudar?
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Formulário de Chat -->
+                <div class="mt-4">
+                    <form id="chat-form" class="flex items-center space-x-3">
+                        <input type="text" id="chat-input" placeholder="Pergunte sobre modelos virtuais, preços, etc..." class="flex-grow rounded-full border border-gray-300 p-3 focus:ring-amber-500 focus:border-amber-500" autocomplete="off">
+                        <button type="submit" id="send-chat-btn" class="cta-button p-3 rounded-full flex items-center justify-center">
+                            <i class="fas fa-paper-plane text-lg"></i>
+                        </button>
+                    </form>
+                    <div id="loading-indicator" class="text-center mt-2 text-sm text-gray-500 hidden">
+                        <i class="fas fa-circle-notch fa-spin mr-1"></i> A IA está a escrever...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        const apiKey = ""; 
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        const SYSTEM_INSTRUCTION = "Você é o 'Novo Olhar Assistente', um chatbot cordial e profissional de uma empresa de serviços visuais para e-commerce que usa IA (Inteligência Artificial). Sua missão é fornecer informações precisas sobre os serviços, preços (Pacote Básico: 13€/foto; Estúdio Virtual: 250€/10 peças; Pacote A/B: 110€/3 artes) e a missão da Novo Olhar. Mantenha as respostas focadas no negócio de imagens de produtos e IA. Seja breve, utilize emoji e encoraje o usuário a preencher o formulário de contato (#contato).";
+
+        const modal = document.getElementById('modal-test-gratis');
+        const modalContent = document.getElementById('modal-content');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const openAIChatBtn = document.getElementById('openAIChatBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const contactForm = document.querySelector('#contato form');
+        const contactMessage = document.getElementById('contact-message');
+
+        let chatHistory = [];
+
+        async function sendToGemini(query) {
+            try {
+                chatHistory.push({ role: "user", parts: [{ text: query }] });
+                const payload = { contents: chatHistory, systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] } };
+                let response = null;
+                let maxRetries = 3;
+                let delay = 1000;
+
+                for (let i = 0; i < maxRetries; i++) {
+                    try {
+                        response = await fetch(API_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (response.ok) break;
+                    } catch (e) {}
+                    if (i < maxRetries - 1) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        delay *= 2; 
+                    }
+                }
+
+                if (!response || !response.ok) throw new Error(`Erro de HTTP`);
+                const result = await response.json();
+                const geminiText = result.candidates?.[0]?.content?.parts?.[0]?.text || "Desculpe, não consegui gerar uma resposta.";
+                
+                chatHistory.push({ role: "model", parts: [{ text: geminiText }] });
+                return geminiText;
+
+            } catch (error) {
+                console.error("Erro ao chamar a API Gemini:", error);
+                return "Houve um erro de conexão com a IA. Por favor, tente novamente.";
+            }
+        }
+
+        function displayMessage(text, role) {
+            const messageContainer = document.createElement('div');
+            messageContainer.className = role === 'user' ? 'flex justify-end' : 'flex justify-start';
+            const messageBubble = document.createElement('div');
+            messageBubble.className = `chat-message p-3 shadow-md text-sm ${role === 'user' ? 'user' : 'gemini'}`;
+            messageBubble.textContent = text;
+            messageContainer.appendChild(messageBubble);
+            chatMessages.appendChild(messageContainer);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const query = chatInput.value.trim();
+            if (query === "") return;
+            displayMessage(query, 'user');
+            chatInput.value = '';
+            loadingIndicator.classList.remove('hidden');
+            const responseText = await sendToGemini(query);
+            loadingIndicator.classList.add('hidden');
+            displayMessage(responseText, 'gemini');
+        }
+
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            const mobileMenu = document.getElementById('mobileMenuContent');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const setupTabs = (buttonClass, contentClass, accentColor, primaryColor) => {
+                const buttons = document.querySelectorAll(buttonClass);
+                const contents = document.querySelectorAll(contentClass);
+
+                buttons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        buttons.forEach(btn => {
+                            btn.style.backgroundColor = btn.getAttribute('data-target') === button.getAttribute('data-target') ? accentColor : (contentClass === '.portfolio-tab-content' ? 'white' : '#f3f4f6');
+                            btn.style.color = btn.getAttribute('data-target') === button.getAttribute('data-target') ? primaryColor : '#4b5563';
+                            if (btn !== button) btn.style.backgroundColor = contentClass === '.portfolio-tab-content' ? 'white' : '#f3f4f6';
+                        });
+
+                        contents.forEach(content => {
+                            content.classList.add('hidden');
+                            content.classList.remove('grid');
+                        });
+
+                        const targetId = button.getAttribute('data-target');
+                        const targetContent = document.getElementById(targetId);
+                        if (targetContent) {
+                            targetContent.classList.remove('hidden');
+                            targetContent.classList.add('grid');
+                        }
+                        
+                        button.style.backgroundColor = accentColor;
+                        button.style.color = primaryColor;
+
+                        // Update portfolio CTA button if applicable
+                        if (buttonClass === '.portfolio-tab-button') {
+                            const map = {
+                                'portfolio-melhoria': { label: 'Pedir Orçamento — Melhoria de Produtos', tab: 'melhoria-produtos' },
+                                'portfolio-modelos':  { label: 'Pedir Orçamento — Modelos Virtuais',     tab: 'modelos-virtuais' },
+                                'portfolio-artes':    { label: 'Pedir Orçamento — Criação de Artes',     tab: 'criacao-artes' }
+                            };
+                            const info = map[button.getAttribute('data-target')];
+                            const cta = document.getElementById('portfolio-cta-btn');
+                            if (info && cta) {
+                                cta.textContent = info.label;
+                                cta.onclick = function(e) {
+                                    e.preventDefault();
+                                    document.querySelector('.tab-button[data-target="' + info.tab + '"]').click();
+                                    document.getElementById('ofertas').scrollIntoView({behavior: 'smooth'});
+                                };
+                            }
+                        }
+                    });
+                });
+            };
+
+            // O setup de tabs mantém-se impecável
+            setupTabs('.tab-button', '.tab-content', 'var(--color-accent)', 'var(--color-primary)');
+            document.querySelector('#ofertas .tab-button').click(); 
+            
+            setupTabs('.portfolio-tab-button', '.portfolio-tab-content', 'var(--color-accent)', 'var(--color-primary)');
+            document.querySelector('#portfolio .portfolio-tab-button').click(); 
+            // 8. Slider de Comparação
+            initComparisonSliders();
+
+            // 9. Slider Simples Serviços
+            initServicesSliders();
+            // Nav active observer
+            const sections = document.querySelectorAll('.section-observer');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const observerOptions = { root: null, rootMargin: "-20% 0px -20% 0px", threshold: 0.3 };
+            const navObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => link.classList.remove('is-active'));
+                        const targetLink = document.querySelector('a[href="#' + entry.target.id + '"]');
+                        if (targetLink) targetLink.classList.add('is-active');
+                    }
+                });
+            }, observerOptions);
+            sections.forEach(section => navObserver.observe(section));
+        });
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        openModalBtn.addEventListener('click', openModal);
+        openAIChatBtn.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        chatForm.addEventListener('submit', handleChatSubmit);
+
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            contactMessage.textContent = 'Obrigado! Sua mensagem foi enviada. Entraremos em contato em breve.';
+            contactMessage.classList.remove('hidden', 'text-red-600');
+            contactMessage.classList.add('text-green-600');
+            contactForm.reset();
+            setTimeout(() => { contactMessage.classList.add('hidden'); }, 5000);
+        });
+
+        const initMagneticEffect = () => {
+            const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            if (isTouchDevice()) return;
+
+            const magneticElements = document.querySelectorAll('.cta-button, .whatsapp-float, .ai-chat-float');
+
+            magneticElements.forEach(btn => {
+                let rafId = null; 
+                let isHovering = false;
+
+                btn.style.willChange = 'transform';
+
+                btn.addEventListener('mousemove', (e) => {
+                    isHovering = true;
+                    const rect = btn.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const deltaX = e.clientX - centerX;
+                    const deltaY = e.clientY - centerY;
+                    const maxMove = 6;
+                    const xWalk = Math.max(-maxMove, Math.min(maxMove, deltaX * 0.15));
+                    const yWalk = Math.max(-maxMove, Math.min(maxMove, deltaY * 0.15));
+
+                    if (rafId) cancelAnimationFrame(rafId);
+                    rafId = requestAnimationFrame(() => {
+                        if (!isHovering) return;
+                        btn.style.transition = 'transform 0.1s ease-out';
+                        let baseTransform = "scale(1)";
+                        if (btn.classList.contains('whatsapp-float')) baseTransform = "scale(1.1)";
+                        else if (btn.classList.contains('ai-chat-float')) baseTransform = "scale(1.05)";
+                        else baseTransform = "translateY(-2px) scale(1.02)"; 
+                        btn.style.transform = `translate3d(${xWalk}px, ${yWalk}px, 0) ${baseTransform}`;
+                    });
+                });
+
+                btn.addEventListener('mouseleave', () => {
+                    isHovering = false;
+                    if (rafId) cancelAnimationFrame(rafId);
+                    requestAnimationFrame(() => {
+                        btn.style.transition = 'transform 0.3s ease-out';
+                        btn.style.transform = '';
+                        setTimeout(() => { if (!isHovering) btn.style.transition = ''; }, 300);
+                    });
+                });
+            });
+        };
+
+        initMagneticEffect();
+
+        const initScrollReveal = () => {
+            const targetSelectors = [
+                '#home h1', '#home h2', '#home p', '#home button',
+                '#sobre-nos h2', '#sobre-nos img', '#sobre-nos p', '#sobre-nos a.cta-button',
+                '#servicos .section-title', '#servicos > div > p', '#servicos .space-y-16 > div',
+                '#depoimentos .section-title', '#depoimentos .testimonial-card', '#depoimentos a.inline-flex',
+                '#portfolio .section-title', '#portfolio > div > p', '#portfolio .portfolio-tab-button', '#portfolio-content-container .comparison-slider',
+                '#ofertas .section-title', '#ofertas > div > p', '#ofertas .tab-button', '#tab-content-container .tab-content > div',
+                '#contato h2', '#contato p.opacity-80', '#contato form'
+            ];
+
+            const elementsToReveal = document.querySelectorAll(targetSelectors.join(', '));
+            elementsToReveal.forEach(el => el.classList.add('reveal-element'));
+
+            let delayCounter = 0;
+            let delayResetTimer = null;
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = entry.target;
+                        target.style.transitionDelay = `${delayCounter * 0.15}s`;
+                        void target.offsetWidth; 
+                        target.classList.add('reveal-visible');
+                        delayCounter++;
+                        
+                        clearTimeout(delayResetTimer);
+                        delayResetTimer = setTimeout(() => { delayCounter = 0; }, 100);
+
+                        const cleanUp = () => {
+                            target.classList.remove('reveal-element', 'reveal-visible');
+                            target.style.transitionDelay = '';
+                            target.removeEventListener('transitionend', cleanUpHandler);
+                        };
+
+                        const cleanUpHandler = (e) => {
+                            if (e.propertyName === 'transform' || e.propertyName === 'opacity') cleanUp();
+                        };
+
+                        target.addEventListener('transitionend', cleanUpHandler);
+                        setTimeout(cleanUp, 1500);
+                        observer.unobserve(target);
+                    }
+                });
+            }, { root: null, rootMargin: "0px 0px -10% 0px", threshold: 0 });
+
+            elementsToReveal.forEach(el => revealObserver.observe(el));
+        };
+
+        initScrollReveal();
+
+        // 8. Inicialização do Slider de Comparação (Antes e Depois - Portfólio & Ofertas)
+        const initComparisonSliders = () => {
+            const sliders = document.querySelectorAll('.comparison-slider');
+            
+            sliders.forEach(slider => {
+                const beforeImage = slider.querySelector('.comparison-before');
+                const handle = slider.querySelector('.comparison-handle');
+                let isDragging = false;
+
+                const updateSliderPosition = (clientX) => {
+                    const rect = slider.getBoundingClientRect();
+                    let x = clientX - rect.left;
+                    x = Math.max(0, Math.min(x, rect.width));
+                    const percentage = (x / rect.width) * 100;
+                    
+                    beforeImage.style.clipPath = `polygon(0 0, ${percentage}% 0, ${percentage}% 100%, 0 100%)`;
+                    handle.style.left = `${percentage}%`;
+                };
+
+                const onDragStart = () => {
+                    isDragging = true;
+                    document.body.style.cursor = 'col-resize'; 
+                };
+
+                const onDragEnd = () => {
+                    isDragging = false;
+                    document.body.style.cursor = 'default';
+                };
+
+                const onDragMove = (e) => {
+                    if (!isDragging) return;
+                    e.preventDefault(); 
+                    const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                    requestAnimationFrame(() => updateSliderPosition(clientX));
+                };
+
+                slider.addEventListener('mousedown', (e) => {
+                    onDragStart();
+                    updateSliderPosition(e.clientX);
+                });
+                window.addEventListener('mouseup', onDragEnd);
+                window.addEventListener('mousemove', onDragMove);
+
+                slider.addEventListener('touchstart', (e) => {
+                    onDragStart();
+                    updateSliderPosition(e.touches[0].clientX);
+                    e.preventDefault();
+                }, { passive: false });
+                window.addEventListener('touchend', onDragEnd);
+                window.addEventListener('touchmove', onDragMove, { passive: false });
+            });
+        };
+
+        // 9. Slider Simples da Seção de Serviços 
+        const initServicesSliders = () => {
+            const serviceSliders = document.querySelectorAll('.custom-slider-container');
+            
+            serviceSliders.forEach(container => {
+                const slider = container.querySelector('.custom-slider-mask');
+                const handle = container.querySelector('.custom-slider-handle');
+                const btn = container.querySelector('.custom-slider-btn');
+
+                let isDragging = false;
+
+                function move(e) {
+                    if (!isDragging) return;
+
+                    let rect = container.getBoundingClientRect();
+                    let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    let x = clientX - rect.left;
+
+                    let percent = Math.max(0, Math.min(100, (x / rect.width) * 100));
+
+                    slider.style.width = percent + "%";
+                    handle.style.left = percent + "%";
+                    btn.style.left = percent + "%";
+                }
+
+                handle.addEventListener("mousedown", () => isDragging = true);
+                btn.addEventListener("mousedown", () => isDragging = true);
+                window.addEventListener("mouseup", () => isDragging = false);
+                window.addEventListener("mousemove", move);
+
+                handle.addEventListener("touchstart", () => isDragging = true, {passive: true});
+                btn.addEventListener("touchstart", () => isDragging = true, {passive: true});
+                window.addEventListener("touchend", () => isDragging = false);
+                window.addEventListener("touchmove", move, {passive: true});
+                
+                const innerImg = slider.querySelector('img');
+                if(innerImg) {
+                    const updateImgWidth = () => {
+                       innerImg.style.width = `${container.offsetWidth}px`;
+                       innerImg.style.maxWidth = `${container.offsetWidth}px`;
+                    };
+                    window.addEventListener('resize', updateImgWidth);
+                    updateImgWidth();
+                }
+            });
+        };
+
+    </script>
+</body>
+</html>
